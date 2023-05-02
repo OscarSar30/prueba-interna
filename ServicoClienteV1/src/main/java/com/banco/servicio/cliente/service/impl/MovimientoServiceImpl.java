@@ -47,8 +47,7 @@ public class MovimientoServiceImpl implements MovimientoService {
 			String numeroCuenta, String tipoMovimiento) {
 		log.info("Inicia proceso de consultar todos los movimientos por numero cuenta y tipo movimiento");
 		return cuentaRepository.findByNumeroCuenta(numeroCuenta)
-				.flatMap(cuentaEntity -> movimientoRepository
-						.findByTipoMovimientoAndCuentaId(tipoMovimiento, cuentaEntity.getCuentaId())
+				.flatMap(cuentaEntity -> movimientoRepository.findByTipoMovimientoAndCuentaId(tipoMovimiento, cuentaEntity.getCuentaId())
 						.switchIfEmpty(Mono.error(ClienteExcepcion.NOT_FOUND_DATA))
 						.map(entities -> mapper.entitiesToGetMovimientosByFilters(cuentaEntity, entities)).collectList()
 						.map(Flux::fromIterable).map(ResponseEntity::ok));

@@ -26,10 +26,10 @@ import reactor.core.publisher.Mono;
 public class ClienteServiceImpl implements ClienteService{
 	
 	@Autowired
-	ClienteRepository clienteRepository;
+	private ClienteRepository clienteRepository;
 	
 	@Autowired
-	PersonaRepository personaRepository;
+	private PersonaRepository personaRepository;
 	
 	@Autowired
 	private ClienteMapper mapper;
