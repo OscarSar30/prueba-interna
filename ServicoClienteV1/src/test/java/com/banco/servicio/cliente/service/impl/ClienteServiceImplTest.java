@@ -8,9 +8,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.banco.servicio.cliente.mapper.ClienteMapper;
+import com.banco.servicio.cliente.model.GetClientes;
+import com.banco.servicio.cliente.model.GetPersonaAll;
 import com.banco.servicio.cliente.repository.ClienteRepository;
 import com.banco.servicio.cliente.repository.PersonaRepository;
 import com.banco.servicio.cliente.utils.MockData;
@@ -47,8 +51,8 @@ class ClienteServiceImplTest {
 				.thenReturn(Mono.just(MockData.buildClienteEntity()));
 		
 		StepVerifier.create(clienteServiceImpl.consultarClientePorIdentificacion(MockData.CEDULA))
-					.expectComplete()
-					.verify();
+					.expectNext(ResponseEntity.status(HttpStatus.OK).body(new GetClientes()))
+					.verifyComplete();
 		
 	}
 	
@@ -57,9 +61,11 @@ class ClienteServiceImplTest {
 		Mockito.when(personaRepository.findAll())
 				.thenReturn(Flux.just(MockData.buildPersonaEntity()));
 		
+		ResponseEntity<Flux<GetPersonaAll>> response = ResponseEntity.status(HttpStatus.OK).body(Flux.just(new GetPersonaAll()));
+		
 		StepVerifier.create(clienteServiceImpl.consultarClientes())
-					.expectComplete()
-					.verify();
+					.expectNext(response)
+					.verifyComplete();
 		
 	}
 

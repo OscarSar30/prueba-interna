@@ -8,9 +8,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.banco.servicio.cliente.mapper.CuentaMapper;
+import com.banco.servicio.cliente.model.GetCuentaByNumeroCuenta;
+import com.banco.servicio.cliente.model.GetCuentas;
 import com.banco.servicio.cliente.repository.ClienteRepository;
 import com.banco.servicio.cliente.repository.CuentaRepository;
 import com.banco.servicio.cliente.repository.PersonaRepository;
@@ -52,8 +56,8 @@ class CuentaServiceImplTest {
 				.thenReturn(Mono.just(personaId));
 		
 		StepVerifier.create(cuentaServiceImpl.consultarCuentaPorNumeroCuenta(MockData.NUMERO_CUENTA))
-					.expectComplete()
-					.verify();
+					.expectNext(ResponseEntity.status(HttpStatus.OK).body(new GetCuentaByNumeroCuenta()))
+					.verifyComplete();
 		
 	}
 	
@@ -62,9 +66,11 @@ class CuentaServiceImplTest {
 		Mockito.when(cuentaRepository.findAll())
 				.thenReturn(Flux.just(MockData.buildCuentaEntity()));
 		
+		ResponseEntity<Flux<GetCuentas>> response = ResponseEntity.status(HttpStatus.OK).body(Flux.just(new GetCuentas()));
+		
 		StepVerifier.create(cuentaServiceImpl.consultarCuentas())
-					.expectComplete()
-					.verify();
+					.expectNext(response)
+					.verifyComplete();
 		
 	}
 	
@@ -80,9 +86,11 @@ class CuentaServiceImplTest {
 		Mockito.when(cuentaRepository.findByClienteId(Mockito.anyInt()))
 				.thenReturn(Flux.just(MockData.buildCuentaEntity()));
 		
+		ResponseEntity<Flux<GetCuentas>> response = ResponseEntity.status(HttpStatus.OK).body(Flux.just(new GetCuentas()));
+		
 		StepVerifier.create(cuentaServiceImpl.consultarCuentasPorIdentificacion(MockData.CEDULA))
-					.expectComplete()
-					.verify();
+					.expectNext(response)
+					.verifyComplete();
 		
 	}
 
