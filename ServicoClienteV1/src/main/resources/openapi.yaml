@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: API Servicio Cliente
+  description: Servicio de Cliente
+  termsOfService: https://www.google.com
+  contact:
+    email: oscar.sarcoss@outlook.com
+  license:
+    name: Apache 2.0
+    url: https://www.gnu.org/licenses/gpl-3.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+    description: Generated server url
+paths:
+  /clientes:
+    get:
+      tags:
+        - Clientes
+      summary: Consultar listado de clientes activos
+      description: Consultar listado de clientes activos
+      operationId: consultarClientes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteDTO'
+        '204':
+          description: No Content
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+    put:
+      tags:
+        - Clientes
+      summary: Actualizar cliente
+      description: Actualizar cliente
+      operationId: actualizarCliente
+      requestBody:
+        description: Cliente
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/ClienteDTO'
+        required: true
+      responses:
+        '200':
+          description: Updated
+        '400':
+          description: Bad Request
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '404':
+          description: Not Found
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+    post:
+      tags:
+        - Clientes
+      summary: Crear nuevo cliente
+      description: Crear nuevo cliente
+      operationId: crearCliente
+      requestBody:
+        description: Cliente
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/ClienteDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+  /clientes/{id}:
+    delete:
+      tags:
+        - Clientes
+      summary: Eliminar cliente por ID
+      description: Eliminar cliente por ID
+      operationId: eliminarCliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+  /clientes/{identificacion}:
+    get:
+      tags:
+        - Clientes
+      summary: Consultar cliente por identificación
+      description: Consultar cliente por identificación
+      operationId: consultarClientePorIdentificacion
+      parameters:
+        - name: identificacion
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                  $ref: '#/components/schemas/ClienteDTO'
+        '204':
+          description: No Content
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/RespuestaDTO'
+components:
+  schemas:
+    ClienteDTO:
+      required:
+        - contrasenia
+        - id
+        - identificacion
+      type: object
+      properties:
+        nombres:
+          type: string
+        genero:
+          type: string
+        edad:
+          maximum: 3
+          minimum: 2
+          type: integer
+          format: int32
+        identificacion:
+          maxLength: 13
+          minLength: 10
+          type: string
+        direccion:
+          type: string
+        telefono:
+          type: string
+        contrasenia:
+          type: string
+        estado:
+          type: boolean
+      description: Modelo Canónico de Cliente
+    RespuestaDTO:
+      type: object
+      properties:
+        codigoRespuesta:
+          type: string
+        descripcion:
+          type: string
+      description: Modelo Canónico de Respuesta
