@@ -4,7 +4,6 @@ import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.banco.servicio.cliente.repository.entity.ClienteEntity;
 import com.banco.servicio.cliente.repository.entity.ClienteModelEntity;
 
 import reactor.core.publisher.Mono;
@@ -12,7 +11,7 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface ClienteRepository extends ReactiveCrudRepository<ClienteModelEntity, Integer>{
 
-	Mono<ClienteEntity> findByPersonaId(Integer idPersona);
+	Mono<ClienteModelEntity> findByPersonaId(Integer idPersona);
 
 	@Query("SELECT COUNT(P.IDENTIFICACION) > 0 FROM PERSONA P WHERE P.IDENTIFICACION = :identificacion")
 	Mono<Boolean> findByIdentificacionUnica(String identificacion);

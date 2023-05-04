@@ -1,20 +1,18 @@
 package com.banco.servicio.cliente.service.impl;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.banco.servicio.cliente.mapper.ClienteMapper;
-import com.banco.servicio.cliente.model.GetMovimientosByNumeroCuenta;
-import com.banco.servicio.cliente.model.GetMovimientosByNumeroCuentaAndTipo;
+import com.banco.servicio.cliente.mapper.MovimientoMapper;
 import com.banco.servicio.cliente.repository.ClienteRepository;
 import com.banco.servicio.cliente.repository.CuentaRepository;
 import com.banco.servicio.cliente.repository.MovimientoRepository;
@@ -28,58 +26,61 @@ import reactor.test.StepVerifier;
 @AutoConfigureMockMvc
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = {MovimientoServiceImplTest.class})
+@ContextConfiguration(classes = { MovimientoServiceImplTest.class })
 class MovimientoServiceImplTest {
-	
-	@Mock
+
+	@MockBean
 	private PersonaRepository personaRepository;
-	
-	@Mock
+
+	@MockBean
 	private ClienteRepository clienteRepository;
-	
-	@Mock
+
+	@MockBean
 	private CuentaRepository cuentaRepository;
-	
-	@Mock
+
+	@MockBean
 	private MovimientoRepository movimientoRepository;
-	
-	@Mock
-	private ClienteMapper mapper;
-	
+
+	@MockBean
+	private MovimientoMapper mapper;
+
 	@InjectMocks
 	private MovimientoServiceImpl movimientoServiceImpl;
-	
-	
+
 	@Test
 	void consultarMovimientosPorCuentaTipoMovimientoOk() {
 		Mockito.when(cuentaRepository.findByNumeroCuenta(Mockito.anyString()))
 				.thenReturn(Mono.just(MockData.buildCuentaEntity()));
-		
+
 		Mockito.when(movimientoRepository.findByTipoMovimientoAndCuentaId(Mockito.anyString(), Mockito.anyInt()))
 				.thenReturn(Flux.just(MockData.buildMovimientoEntity()));
-		
-		ResponseEntity<Flux<GetMovimientosByNumeroCuentaAndTipo>> response = ResponseEntity.status(HttpStatus.OK).body(Flux.just(new GetMovimientosByNumeroCuentaAndTipo()));
-		
-		StepVerifier.create(movimientoServiceImpl.consultarMovimientosPorCuentaTipoMovimiento(MockData.NUMERO_CUENTA, "Ahorros"))
-						.expectNext(response)
-						.verifyComplete();
-		
+
+		Mockito.when(mapper.entitiesToGetMovimientosByFilters(Mockito.any(), Mockito.any()))
+				.thenReturn(MockData.buildGetMovimientosByNumeroCuentaAndTipo());
+
+		StepVerifier
+				.create(movimientoServiceImpl.consultarMovimientosPorCuentaTipoMovimiento(MockData.NUMERO_CUENTA,
+						"Ahorros"))
+				.consumeNextWith(resp -> Assertions.assertEquals(HttpStatus.OK, resp.getStatusCode())).expectComplete()
+				.verify();
+
 	}
-	
+
 	@Test
 	void consultarMovimientosPorNumeroCuentaOk() {
 		Mockito.when(cuentaRepository.findByNumeroCuenta(Mockito.anyString()))
 				.thenReturn(Mono.just(MockData.buildCuentaEntity()));
-		
+
 		Mockito.when(movimientoRepository.findByCuentaId(Mockito.anyInt()))
 				.thenReturn(Flux.just(MockData.buildMovimientoEntity()));
-		
-		ResponseEntity<Flux<GetMovimientosByNumeroCuenta>> response = ResponseEntity.status(HttpStatus.OK).body(Flux.just(new GetMovimientosByNumeroCuenta()));
-		
+
+		Mockito.when(mapper.entityToGetMovimientosByNumeroCuenta(Mockito.any()))
+				.thenReturn(MockData.buildGetMovimientosByNumeroCuenta());
+
 		StepVerifier.create(movimientoServiceImpl.consultarMovimientosPorNumeroCuenta(MockData.NUMERO_CUENTA))
-						.expectNext(response)
-						.verifyComplete();
-		
+				.consumeNextWith(resp -> Assertions.assertEquals(HttpStatus.OK, resp.getStatusCode())).expectComplete()
+				.verify();
+
 	}
 
 }

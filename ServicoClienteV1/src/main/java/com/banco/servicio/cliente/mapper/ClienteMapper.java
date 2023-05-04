@@ -3,11 +3,11 @@ package com.banco.servicio.cliente.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import com.banco.servicio.cliente.model.ActualizarCliente;
+import com.banco.servicio.cliente.model.CrearCliente;
 import com.banco.servicio.cliente.model.GetClientes;
 import com.banco.servicio.cliente.model.GetPersonaAll;
-import com.banco.servicio.cliente.model.CrearCliente;
-import com.banco.servicio.cliente.model.ActualizarCliente;
-import com.banco.servicio.cliente.repository.entity.ClienteEntity;
+import com.banco.servicio.cliente.repository.entity.ClienteModelEntity;
 import com.banco.servicio.cliente.repository.entity.PersonaEntity;
 
 
@@ -21,7 +21,7 @@ public interface ClienteMapper {
 	@Mapping(source = "personaEntity.telefono", target = "telefono")	
 	@Mapping(source = "personaEntity.identificacion", target = "identificacion")
 	@Mapping(source = "clienteEntity.estado", target = "estado")
-	GetClientes entityToGetClientes(PersonaEntity personaEntity, ClienteEntity clienteEntity);
+	GetClientes entityToGetClientes(PersonaEntity personaEntity, ClienteModelEntity clienteEntity);
 	
 	@Mapping(source = "entity.nombres", target = "nombres")
 	@Mapping(source = "entity.genero", target = "genero")
